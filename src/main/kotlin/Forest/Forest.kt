@@ -41,10 +41,10 @@ object Forest {
 
     fun makeIteration() {
         iteration++
-        discord()
         animals.forEach { processFood(field[it.row][it.col], it) }
         union()
         hunt()
+        discord()
         updateField()
         updateGeneration()
         createReport(iteration)
