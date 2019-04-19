@@ -53,7 +53,7 @@ class FieldCell(val x: Double, val y: Double, val width: Double, val height: Dou
     //координаты для животных
     fun animalPlaces(): Map<ETreePart, Map<EAnimal, Pair<Double, Double>>> {
         val animalSize = 25.0
-        var stepX = (width - 2 * border) / 6
+        var stepX = (width -  border - animalSize) / 5
         var stepY = (height - border - animalSize) / 5
         var begX = x + border
         var begY = y + height - border - animalSize
@@ -73,7 +73,7 @@ class FieldCell(val x: Double, val y: Double, val width: Double, val height: Dou
                 EAnimal.FLYING_SQUIRREL to Pair(begX + 2 * stepX, begY + stepY), EAnimal.WOODPECKER to Pair(begX - 2 * stepX, begY + stepY),
                 EAnimal.BADGER to Pair(begX + stepX, begY + 3 * stepY), EAnimal.VULTURE to Pair(begX - stepX, begY + 3 * stepY)
         )
-        return mapOf<ETreePart, Map<EAnimal, Pair<Double, Double>>>(ETreePart.CROWN to crownPlace, ETreePart.TRUNK to trunkPlace, ETreePart.ROOTS to groundPlace)
+        return mapOf(ETreePart.CROWN to crownPlace, ETreePart.TRUNK to trunkPlace, ETreePart.ROOTS to groundPlace)
     }
 
     private fun createReport(): String {

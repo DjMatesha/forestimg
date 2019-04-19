@@ -42,13 +42,13 @@ object Forest {
     fun makeIteration() {
         iteration++
         animals.forEach { processFood(field[it.row][it.col], it) }
-        union()
         hunt()
-        discord()
         updateField()
         updateGeneration()
+        discord()
         createReport(iteration)
         animals.forEach { it.makeMove(field) }
+        union()
     }
 
     private fun processFood(fieldCell: FieldCell, animal: ICreature) {

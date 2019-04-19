@@ -25,7 +25,7 @@ class LeftView : View() {
             fieldset("Лес") {
                 field("Ширина") {
                     forestWidth = textfield("5")
-                    val p = Pattern.compile("""|[1-9]|[1][0-5]""")
+                    val p = Pattern.compile("""|[1-9]|10""")
                     forestWidth.textProperty().addListener { _, oldValue, newValue -> if (!p.matcher(newValue).matches()) forestWidth.text = oldValue }
                     forestWidth.focusedProperty().addListener { _, _, isNowFocused ->
                         if (!isNowFocused)
