@@ -19,6 +19,7 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.min as min1
 
 interface ICreature : IAnimalCharacteristics, ISkills {
     val animalType: EAnimal
@@ -54,7 +55,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
                  minHungerGrowth: Float = 100f) {
 
         if (ThreadLocalRandom.current().nextInt(0, 100) >= hungriness) {
-            stamina += 4
+            stamina = min(stamina + 4, 100f)
             return
         }
 
@@ -94,7 +95,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
                     object : EventHandler<ActionEvent> {
 
                         var dx = (end.first - begin.first) / 20 //Step on x or velocity
-                        var dy = (end.second - begin.second)/ 20 //Step on y
+                        var dy = (end.second - begin.second) / 20 //Step on y
 
                         override fun handle(t: ActionEvent) {
                             //move the ball
@@ -108,6 +109,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
             timeline.play()
         }
         stamina -= if (dist > 0) dist else -4
+        stamina = min(stamina, 100f)
         hungriness = min(minHungerGrowth, hungriness + dist)
         val temp = if (ThreadLocalRandom.current().nextInt(0, 100) <= hungriness) foodPart
         else ablePart.elementAt(ThreadLocalRandom.current().nextInt(ablePart.count()))
@@ -121,7 +123,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
         hungriness -= foodPoints / animalCount
     }
 
-    fun samePlace(animal : ICreature) = ( !(this===animal) && row==animal.row && col == animal.col && animalType == animal.animalType && treePart == animal.treePart)
+    fun samePlace(animal: ICreature) = (!(this === animal) && row == animal.row && col == animal.col && animalType == animal.animalType && treePart == animal.treePart)
 
     fun progeny() {
         if (animalCount >= 2 && ThreadLocalRandom.current().nextInt(0, 100) < childProb * (100 - hungriness) / 100) {
@@ -132,7 +134,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
 
     fun discord(): ICreature? {
         if (animalCount > fellowship && ThreadLocalRandom.current().nextInt(0, 100) >= fellowship) {
-            val part: Int = animalCount/2
+            val part: Int = animalCount / 2
             this.animalCount -= part
             this.text.text = animalCount.toString()
             return copy(part)
@@ -142,15 +144,15 @@ interface ICreature : IAnimalCharacteristics, ISkills {
 
     fun removeAnimalIfDead() {
         if (hungriness == 100f) {
-            animalCount = max(0,animalCount-1)
+            animalCount = max(0, animalCount - 1)
             text.text = animalCount.toString()
             if (animalCount == 0)
                 this.removeAnimal()
         }
     }
 
-    fun removeAnimal(){
-        if (animalCount==0){
+    fun removeAnimal() {
+        if (animalCount == 0) {
             val canvas = find(CenterView::class).root
             canvas.children.remove(img)
             canvas.children.remove(text)

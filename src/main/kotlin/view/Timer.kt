@@ -16,7 +16,6 @@ class Timer: View() {
     override val root = vbox {
         setMaxSize(0.0, 0.0)
         subscribe<StartRequest> {event ->
-            println(event.mode)
             when(event.mode) {
                 true -> {
                     timer = fixedRateTimer("Timer", true, 0, 500, {task.run()})

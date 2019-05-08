@@ -7,6 +7,7 @@ import Forest.Animals.*
 import java.util.concurrent.ThreadLocalRandom
 
 import kotlin.math.min
+import kotlin.math.truncate
 
 fun IntRange.random() = ThreadLocalRandom.current().nextInt(this.first, this.last)
 
@@ -55,31 +56,29 @@ object Forest {
         animal.hungriness = min(animal.hungriness + 1, 100f)
         if (animal.foodPart == animal.treePart) {
             val eatable: List<Pair<EFood, Int>> = checkForFood(fieldCell, animal)
-            var hungriness = animal.groupHungriness
+            val hungriness = animal.groupHungriness
             val newFood: MutableMap<EFood, Int> = mutableMapOf()
             for (foodUnit in eatable) {
                 val foodValue = foodValues[foodUnit.first]
-                val toEat = min((hungriness / foodValue!!).toInt(), foodUnit.second)
+                val toEat = min(truncate(hungriness / foodValue!!).toInt(), foodUnit.second)
 
                 newFood[foodUnit.first] = foodUnit.second - toEat
                 animal.feed(toEat * foodValue)
-                hungriness -= foodValue * toEat / animal.animalCount
             }
             fieldCell.food = newFood
         }
     }
 
-    fun hunt() {
+    private fun hunt() {
         for (hunter in animals) {
             for (pray in animals) {
                 if (pray.animalType in hunter.hunt && pray.row == hunter.row && pray.col == hunter.col && pray.treePart == hunter.treePart && pray.animalCount != 0) {
-                    var hungriness = hunter.groupHungriness
+                    val hungriness = hunter.groupHungriness
                     val foodValue = huntValues[pray.animalType]
-                    val toEat = min((hungriness / foodValue!!).toInt(), pray.animalCount)
+                    val toEat = min(truncate(hungriness / foodValue!!).toInt(), pray.animalCount)
                     pray.animalCount -= toEat
                     pray.text.text = pray.animalCount.toString()
                     hunter.feed(toEat * foodValue)
-                    hungriness -= foodValue * toEat / hunter.animalCount
                 }
             }
         }
@@ -135,8 +134,7 @@ object Forest {
         field.map { row ->
             row.map { cell ->
                 cell.food.forEach { foodUnit ->
-                    food[foodUnit.key] =
-                            if (food[foodUnit.key] != null) food[foodUnit.key]!! + foodUnit.value else foodUnit.value
+                    food[foodUnit.key] = food[foodUnit.key]?.plus(foodUnit.value)?:foodUnit.value
                 }
             }
         }
@@ -160,10 +158,10 @@ object Forest {
     )
 
     private val huntValues: Map<EAnimal, Int> = mapOf(
-            Pair(EAnimal.BADGER, 5),
-            Pair(EAnimal.CHIPMUNK, 4),
-            Pair(EAnimal.FLYING_SQUIRREL, 2),
-            Pair(EAnimal.SQUIRREL, 3),
-            Pair(EAnimal.WOODPECKER, 2)
+            Pair(EAnimal.BADGER, 15),
+            Pair(EAnimal.CHIPMUNK, 12),
+            Pair(EAnimal.FLYING_SQUIRREL, 6),
+            Pair(EAnimal.SQUIRREL, 9),
+            Pair(EAnimal.WOODPECKER, 6)
     )
 }
