@@ -107,6 +107,8 @@ object Forest {
         for (i in animals)
             for (j in animals)
                 if (i.samePlace(j) && i.animalCount != 0) {
+                    i.hungriness = (i.hungriness*i.animalCount + j.hungriness*j.animalCount)/(i.animalCount+ j.animalCount)
+                    i.stamina = (i.stamina*i.animalCount + j.stamina*j.animalCount)/(i.animalCount+ j.animalCount)
                     i.animalCount += j.animalCount
                     i.text.text = i.animalCount.toString()
                     j.animalCount = 0
