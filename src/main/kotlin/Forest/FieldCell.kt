@@ -12,25 +12,18 @@ import view.Timer
 import java.io.File
 import java.util.concurrent.ThreadLocalRandom
 
-class FieldCell(val x: Double, val y: Double, val width: Double, val height: Double) {
+class FieldCell(val x: Double, val y: Double, val width: Double, val height: Double, testMode:Boolean = false) {
     private val canvas = find(CenterView::class).root
-    val type: ETree = ETree.values()[ThreadLocalRandom.current().nextInt(ETree.values().size)]
+    private val type: ETree = ETree.values()[ThreadLocalRandom.current().nextInt(ETree.values().size)]
 
     var food: MutableMap<EFood, Int> = mutableMapOf()
         set(newFoodUnits) = field.putAll(newFoodUnits.toMap())
 
     val hasFood = food.any { it.value > 0 }
-    val border = 1.0
+    private val border = 1.0
     val place = animalPlaces()
 
     init {
-        println(type.prettyName)
-        val img = ImageView(File("src\\main\\img\\${type.prettyName}.png").toURI().toString())
-        img.relocate(x + border, y + border)
-        img.fitHeight = height - 2 * border
-        img.fitWidth = width - 2 * border
-        canvas.add(img)
-
         val possibleFood: List<EFood> = when (type) {
             ETree.FIR, ETree.PINE, ETree.WALNUT -> listOf(EFood.NUTS, EFood.CONES)
             ETree.MAPLE -> listOf(EFood.MAPLE_LEAVES)
@@ -39,13 +32,21 @@ class FieldCell(val x: Double, val y: Double, val width: Double, val height: Dou
 
         possibleFood.map { food.put(it, 0) }
 
-        img.setOnMouseClicked {
-            if (!Timer.work) {
-                val alert = Alert(Alert.AlertType.INFORMATION)
-                alert.title = "Сведения о дереве"
-                alert.headerText = null
-                alert.contentText = this.createReport()
-                alert.showAndWait()
+        if(!testMode){
+            val img = ImageView(File("src\\main\\img\\${type.prettyName}.png").toURI().toString())
+            img.relocate(x + border, y + border)
+            img.fitHeight = height - 2 * border
+            img.fitWidth = width - 2 * border
+            canvas.add(img)
+
+            img.setOnMouseClicked {
+                if (!Timer.work) {
+                    val alert = Alert(Alert.AlertType.INFORMATION)
+                    alert.title = "Сведения о дереве"
+                    alert.headerText = null
+                    alert.contentText = this.createReport()
+                    alert.showAndWait()
+                }
             }
         }
     }

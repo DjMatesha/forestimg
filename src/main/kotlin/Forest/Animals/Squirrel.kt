@@ -13,6 +13,7 @@ import javafx.scene.paint.Color
 import javafx.scene.shape.Circle
 import javafx.scene.text.Font
 import javafx.scene.text.FontWeight
+import javafx.scene.text.Text
 import tornadofx.*
 import view.CenterView
 import view.Timer
@@ -21,7 +22,8 @@ import java.util.concurrent.ThreadLocalRandom
 class Squirrel(
         override var row: Int,
         override var col: Int,
-        override var animalCount: Int
+        override var animalCount: Int,
+        override var testMode: Boolean = false
 ) : ICreature {
     private val canvas = find(CenterView::class).root
     override val ablePart = setOf(ETreePart.CROWN, ETreePart.TRUNK, ETreePart.ROOTS)
@@ -33,7 +35,7 @@ class Squirrel(
     override val food: Set<EFood> = setOf(EFood.NUTS, EFood.CONES)
     override val animalType = EAnimal.SQUIRREL
 
-    override var stamina = 50.0f
+    override var stamina = 50
     override var hungriness = 50.0f
     override var childProb = 10.0f
     override var fellowship = 10.0f
@@ -51,38 +53,41 @@ class Squirrel(
 
     override var intellect: Int = 1
     override val additionalIntellectOnLevelUp: Int = 1
-    override val text = javafx.scene.text.Text("$animalCount")
+    override val text = Text("")
 
     override fun copy(count: Int):Squirrel {
-        val temp = Squirrel(row,col, animalCount)
+        val temp = Squirrel(row,col, count, testMode)
         temp.stamina = stamina
         temp.hungriness = hungriness
         return temp
     }
 
     init {
-        val p: Pair<Double, Double> = tree(row, col).place[treePart]!![animalType]!!
-        img.relocate(p.first, p.second)
-        img.setOnMouseClicked {
-            if (!Timer.work) {
-                val alert = Alert(AlertType.INFORMATION)
-                alert.title = "Сведения о стае"
-                alert.headerText = null
-                alert.contentText = this.createReport()
-                alert.showAndWait()
+        if (!testMode){
+            val p: Pair<Double,Double> = tree(row, col).place[treePart]!![animalType]!!
+            img.relocate(p.first,p.second)
+            img.setOnMouseClicked {
+                if (!Timer.work){
+                    val alert = Alert(AlertType.INFORMATION)
+                    alert.title = "Сведения о стае"
+                    alert.headerText = null
+                    alert.contentText =  this.createReport()
+                    alert.showAndWait()
+                }
             }
-        }
-        text.relocate(p.first + 5, p.second + 5)
-        text.font = Font.font("TimesRoman", FontWeight.BOLD, 12.0)
-        text.setOnMouseClicked {
-            if (!Timer.work) {
-                val alert = Alert(AlertType.INFORMATION)
-                alert.title = "Сведения о стае"
-                alert.headerText = null
-                alert.contentText = this.createReport()
-                alert.showAndWait()
+            text.relocate(p.first + 5,p.second + 5)
+            text.font = Font.font("TimesRoman", FontWeight.BOLD, 12.0)
+            text.text = "$animalCount"
+            text.setOnMouseClicked {
+                if (!Timer.work) {
+                    val alert = Alert(AlertType.INFORMATION)
+                    alert.title = "Сведения о стае"
+                    alert.headerText = null
+                    alert.contentText = this.createReport()
+                    alert.showAndWait()
+                }
             }
+            canvas.children.addAll(img, text)
         }
-        canvas.children.addAll(img, text)
     }
 }

@@ -23,6 +23,7 @@ import kotlin.math.min as min1
 
 interface ICreature : IAnimalCharacteristics, ISkills {
     val animalType: EAnimal
+    val testMode: Boolean
 
     var row: Int
     var col: Int
@@ -34,7 +35,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
 
     var animalCount: Int
 
-    var stamina: Float
+    var stamina: Int
     var hungriness: Float
     val childProb: Float
     val fellowship: Float
@@ -55,7 +56,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
                  minHungerGrowth: Float = 100f) {
 
         if (ThreadLocalRandom.current().nextInt(0, 100) >= hungriness) {
-            stamina = min(stamina + 4, 100f)
+            stamina = min(stamina + 4, 100)
             return
         }
 
@@ -109,11 +110,11 @@ interface ICreature : IAnimalCharacteristics, ISkills {
             timeline.play()
         }
         stamina -= if (dist > 0) dist else -4
-        stamina = min(stamina, 100f)
+        stamina = min(stamina, 100)
         hungriness = min(minHungerGrowth, hungriness + dist)
         val temp = if (ThreadLocalRandom.current().nextInt(0, 100) <= hungriness) foodPart
         else ablePart.elementAt(ThreadLocalRandom.current().nextInt(ablePart.count()))
-        drawMove(tree(row, col), tree(endpoint.first, endpoint.second), treePart, temp)
+        if (!testMode) drawMove(tree(row, col), tree(endpoint.first, endpoint.second), treePart, temp)
         treePart = temp
         row = endpoint.first
         col = endpoint.second
@@ -135,8 +136,9 @@ interface ICreature : IAnimalCharacteristics, ISkills {
     fun discord(): ICreature? {
         if (animalCount > fellowship && ThreadLocalRandom.current().nextInt(0, 100) >= fellowship) {
             val part: Int = animalCount / 2
-            this.animalCount -= part
-            this.text.text = animalCount.toString()
+            animalCount -= part
+            if (!testMode)
+                this.text.text = animalCount.toString()
             return copy(part)
         }
         return null

@@ -9,33 +9,34 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.min
 import kotlin.math.truncate
 
-fun IntRange.random() = ThreadLocalRandom.current().nextInt(this.first, this.last)
+fun IntRange.random() =
+        if (this.first == this.last) this.first
+        else ThreadLocalRandom.current().nextInt(this.first, this.last)
 
 object Forest {
-    private var conf = Config(1, 1, 1..1, 0.1f)
-    private val animals: MutableList<ICreature> = mutableListOf()
-    private var field: List<List<FieldCell>> = listOf()
+    var conf = Config(1, 1, 1..1, 0.1f)
+    val animals: MutableList<ICreature> = mutableListOf()
+    var field: List<List<FieldCell>> = listOf()
     private var iteration = 1
 
-    fun initForest(Row: Int, Col: Int, animals: IntRange, foodProb: Float, treeHeight: Double, treeWidth: Double) {
+    fun initForest(Row: Int, Col: Int, animals: IntRange, foodProb: Float, treeHeight: Double, treeWidth: Double, testMode: Boolean = false) {
         iteration = 1
         conf = Config(Row, Col, animals, foodProb)
         field = (0 until conf.rows).map { i ->
             List(conf.columns) { j ->
-                FieldCell(j * treeWidth, i * treeHeight, treeWidth, treeHeight)
-
+                FieldCell(j * treeWidth, i * treeHeight, treeWidth, treeHeight,testMode)
             }
         }
         updateField()
 
         Forest.animals.clear()
-        Forest.animals += Badger(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += Chipmunk(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += Squirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += FlyingSquirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += Woodpecker(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += Wolf(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
-        Forest.animals += Vulture(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random())
+        Forest.animals += Badger(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += Chipmunk(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += Squirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += FlyingSquirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += Woodpecker(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += Wolf(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        Forest.animals += Vulture(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
     }
 
     fun tree(row: Int, col: Int) = field[row][col]
@@ -134,7 +135,7 @@ object Forest {
         field.map { row ->
             row.map { cell ->
                 cell.food.forEach { foodUnit ->
-                    food[foodUnit.key] = food[foodUnit.key]?.plus(foodUnit.value)?:foodUnit.value
+                    food[foodUnit.key] = food[foodUnit.key]?.plus(foodUnit.value) ?: foodUnit.value
                 }
             }
         }
