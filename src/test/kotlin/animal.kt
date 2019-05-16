@@ -40,14 +40,14 @@ class MyTest : FunSpec() {
         }.config(invocations = 10)
         test("CopyTest") {
             val animals: MutableList<ICreature> = mutableListOf()
-            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals.forEach{
+            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals.forEach {
                 val count = (0..it.animalCount).random()
                 val new = it.copy(count)
                 new.animalCount shouldBe count
@@ -59,23 +59,23 @@ class MyTest : FunSpec() {
         }.config(invocations = 10)
         test("DiscordTest") {
             val animals: MutableList<ICreature> = mutableListOf()
-            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(),testMode = true)
-            animals.forEach{
+            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals.forEach {
                 it.hungriness = ThreadLocalRandom.current().nextDouble(100.0).toFloat()
                 val pred = it.copy(it.animalCount)
                 val new = it.discord()
-                if (new==null){
+                if (new == null) {
                     pred.animalCount shouldBe it.animalCount
                     pred.stamina shouldBe it.stamina
                     pred.hungriness shouldBe it.hungriness
                     pred.animalType shouldBe it.animalType
-                }else{
+                } else {
                     (new.animalCount + it.animalCount) shouldBe pred.animalCount
                     new.stamina shouldBe it.stamina
                     pred.stamina shouldBe it.stamina
@@ -84,6 +84,52 @@ class MyTest : FunSpec() {
                     new.animalType shouldBe it.animalType
                     pred.animalType shouldBe it.animalType
                     new shouldNotBe it
+                }
+            }
+        }.config(invocations = 10)
+        test("ProgenyTest") {
+            val animals: MutableList<ICreature> = mutableListOf()
+            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals.forEach {
+                it.hungriness = ThreadLocalRandom.current().nextDouble(100.0).toFloat()
+                val count = it.animalCount
+                it.progeny()
+                if (count < 2) {
+                    test("Require 2 animal for progeny") {
+                        it.animalCount shouldBe count
+                    }
+                } else {
+                    test("Amount of progeny") {
+                        it.animalCount shouldBe lte(count + count / 2 + 1)
+                    }
+                }
+            }
+        }.config(invocations = 10)
+        test("DeadTest") {
+            val animals: MutableList<ICreature> = mutableListOf()
+            animals += Badger((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Chipmunk((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Squirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += FlyingSquirrel((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Woodpecker((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Wolf((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals += Vulture((1..10).random(), (1..20).random(), (1..99).random(), testMode = true)
+            animals.forEach {
+                it.hungriness = (99..100).random().toFloat()
+                it.animalCount = (0..2).random()
+                val count = it.animalCount
+                it.removeAnimalIfDead()
+                test("Require correct amount of animal") {
+                    it.animalCount shouldBe gte(0)
+                }
+                test("No more than 1 dead animal") {
+                    count-it.animalCount shouldBe between(0,1)
                 }
             }
         }.config(invocations = 10)

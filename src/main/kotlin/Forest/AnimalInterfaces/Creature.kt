@@ -129,7 +129,7 @@ interface ICreature : IAnimalCharacteristics, ISkills {
     fun progeny() {
         if (animalCount >= 2 && ThreadLocalRandom.current().nextInt(0, 100) < childProb * (100 - hungriness) / 100) {
             animalCount += ThreadLocalRandom.current().nextInt(1, animalCount / 2 + 1)
-            text.text = animalCount.toString()
+            if (!testMode) text.text = animalCount.toString()
         }
     }
 
@@ -147,9 +147,11 @@ interface ICreature : IAnimalCharacteristics, ISkills {
     fun removeAnimalIfDead() {
         if (hungriness == 100f) {
             animalCount = max(0, animalCount - 1)
-            text.text = animalCount.toString()
-            if (animalCount == 0)
-                this.removeAnimal()
+            if (!testMode){
+                text.text = animalCount.toString()
+                if (animalCount == 0)
+                    this.removeAnimal()
+            }
         }
     }
 
