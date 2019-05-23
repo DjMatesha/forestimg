@@ -23,7 +23,7 @@ class CenterView : View() {
         }
         subscribe<CreateForestRequest> {event ->
             root.add(Rectangle(root.width,root.height, c("#a1a1a1")))
-            Forest.initForest(event.height, event.width, event.animals, event.foodProb, root.height/event.height, root.width/event.width)
+            Forest.initForest(event.height, event.width, event.animals, event.flocks, event.foodProb, root.height/event.height, root.width/event.width)
         }
     }
 }

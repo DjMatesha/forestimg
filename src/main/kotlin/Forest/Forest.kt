@@ -19,7 +19,7 @@ object Forest {
     var field: List<List<FieldCell>> = listOf()
     private var iteration = 1
 
-    fun initForest(Row: Int, Col: Int, animals: IntRange, foodProb: Float, treeHeight: Double, treeWidth: Double, testMode: Boolean = false) {
+    fun initForest(Row: Int, Col: Int, animals: IntRange, flocks: IntRange, foodProb: Float, treeHeight: Double, treeWidth: Double, testMode: Boolean = false) {
         iteration = 1
         conf = Config(Row, Col, animals, foodProb)
         field = (0 until conf.rows).map { i ->
@@ -29,14 +29,22 @@ object Forest {
         }
         updateField()
 
+
         Forest.animals.clear()
-        Forest.animals += Badger(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += Chipmunk(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += Squirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += FlyingSquirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += Woodpecker(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += Wolf(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
-        Forest.animals += Vulture(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Badger(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Chipmunk(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Squirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += FlyingSquirrel(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Woodpecker(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Wolf(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
+        for (i in 1..flocks.random())
+            Forest.animals += Vulture(ThreadLocalRandom.current().nextInt(conf.rows), ThreadLocalRandom.current().nextInt(conf.columns), conf.animalsCount.random(),testMode)
     }
 
     fun tree(row: Int, col: Int) = field[row][col]

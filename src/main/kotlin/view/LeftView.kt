@@ -17,6 +17,8 @@ class LeftView : View() {
     private var infoLabel: Label by singleAssign()
     private var animalMin: TextField by singleAssign()
     private var animalMax: TextField by singleAssign()
+    private var flockMin: TextField by singleAssign()
+    private var flockMax: TextField by singleAssign()
     private var create: Button by singleAssign()
     private var start: ToggleButton by singleAssign()
     override val root = vbox {
@@ -68,6 +70,30 @@ class LeftView : View() {
                         }
                     }
                 }
+                field("Число стаек") {
+                    hbox {
+                        flockMin = textfield("3")
+                        val p = Pattern.compile("""|[1-9][\d]|[1-9]""")
+                        flockMin.textProperty().addListener { _, oldValue, newValue -> if (!p.matcher(newValue).matches()) flockMin.text = oldValue }
+                        flockMin.focusedProperty().addListener { _, _, isNowFocused ->
+                            if (!isNowFocused)
+                                if (flockMin.text == "") flockMin.text = "1"
+                            flockMin.text = min(flockMin.text.toInt(), flockMax.text.toInt()).toString()
+                        }
+                        label("-") {
+                            minWidth = 10.0
+                            alignment = Pos.CENTER
+                        }
+                        flockMax = textfield("5")
+                        flockMax.textProperty().addListener { _, oldValue, newValue -> if (!p.matcher(newValue).matches()) flockMax.text = oldValue }
+                        flockMax.focusedProperty().addListener { _, _, isNowFocused ->
+                            if (!isNowFocused){
+                                if (flockMax.text == "") flockMax.text = "99"
+                                flockMax.text = max(flockMin.text.toInt(), flockMax.text.toInt()).toString()
+                            }
+                        }
+                    }
+                }
                 field {
                     vbox {
                         label("Вероятность еды")
@@ -90,7 +116,7 @@ class LeftView : View() {
                         action {
                             start.isSelected = true
                             fire(StartRequest(false))
-                            fire(CreateForestRequest(forestWidth.text.toInt(), forestHeight.text.toInt(), animalMin.text.toInt()..animalMax.text.toInt(),foodProb.value.toInt()/100f))
+                            fire(CreateForestRequest(forestWidth.text.toInt(), forestHeight.text.toInt(), animalMin.text.toInt()..animalMax.text.toInt(),flockMin.text.toInt()..flockMax.text.toInt(),foodProb.value.toInt()/100f))
                         }
                     }
                 }

@@ -17,7 +17,7 @@ fun IntRange.random() = ThreadLocalRandom.current().nextInt(this.first, this.las
 class MyTest : FunSpec() {
     init {
         test("MoveTest") {
-            initForest((1..10).random(), (1..20).random(), 1..99, ThreadLocalRandom.current().nextFloat(), 1.0, 1.0, testMode = true)
+            initForest((1..10).random(), (1..20).random(), 1..99, 1..10, ThreadLocalRandom.current().nextFloat(), 1.0, 1.0, testMode = true)
             Forest.animals.forEach {
                 it.stamina = (0..100).random()
                 val pred = it.copy(it.animalCount)
